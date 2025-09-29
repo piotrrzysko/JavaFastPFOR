@@ -24,11 +24,17 @@ public class TestLongVariableByte extends ATestLongCODEC {
 	}
 
 	@Test
-	public void testCodec_intermediateHighPowerOfTwo() {
-		Assert.assertEquals(1, LongTestUtils.compress((LongCODEC) codec, new long[] { 1L << 42 }).length);
-		Assert.assertEquals(7, LongTestUtils.compress((ByteLongCODEC) codec, new long[] { 1L << 42 }).length);
-		Assert.assertEquals(1,
-				LongTestUtils.compressHeadless((SkippableLongCODEC) codec, new long[] { 1L << 42 }).length);
-	}
+	public void testCodec_allBitWidths() {
+		for (int bitWidth = 0; bitWidth <= 64; bitWidth++) {
+			long value = bitWidth == 0 ? 0 : 1L << (bitWidth - 1);
 
+			int expectedSizeInBytes = Math.max(1, (bitWidth + 6) / 7);
+			int expectedSizeInLongs = (expectedSizeInBytes > 8) ? 2 : 1;
+
+			Assert.assertEquals(expectedSizeInLongs, LongTestUtils.compress((LongCODEC) codec, new long[] { value }).length);
+			Assert.assertEquals(expectedSizeInBytes, LongTestUtils.compress((ByteLongCODEC) codec, new long[] { value }).length);
+			Assert.assertEquals(expectedSizeInLongs,
+					LongTestUtils.compressHeadless((SkippableLongCODEC) codec, new long[] { value }).length);
+		}
+	}
 }
