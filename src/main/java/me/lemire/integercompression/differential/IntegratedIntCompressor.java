@@ -3,7 +3,6 @@ package me.lemire.integercompression.differential;
 import java.util.Arrays;
 
 import me.lemire.integercompression.IntWrapper;
-import me.lemire.integercompression.UncompressibleInputException;
 
 /**
  * This is a convenience class that wraps a codec to provide
@@ -36,7 +35,6 @@ public class IntegratedIntCompressor {
      * 
      * @param input array to be compressed
      * @return compressed array
-     * @throws UncompressibleInputException if the data is too poorly compressible
      */
     public  int[] compress(int[] input) {
         int maxCompressedLength = codec.maxHeadlessCompressedLength(new IntWrapper(0), input.length);
@@ -44,12 +42,7 @@ public class IntegratedIntCompressor {
         compressed[0] = input.length;
         IntWrapper outpos = new IntWrapper(1);
         IntWrapper initvalue = new IntWrapper(0);
-        try {
-            codec.headlessCompress(input, new IntWrapper(0), input.length, compressed, outpos, initvalue);
-        } catch (IndexOutOfBoundsException ioebe) {
-            throw new UncompressibleInputException(
-                    "Your input is too poorly compressible with the current codec : " + codec);
-        }
+        codec.headlessCompress(input, new IntWrapper(0), input.length, compressed, outpos, initvalue);
         compressed = Arrays.copyOf(compressed,outpos.intValue());
         return compressed;
     }
