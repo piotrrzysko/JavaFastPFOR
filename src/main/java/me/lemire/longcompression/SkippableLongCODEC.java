@@ -67,4 +67,21 @@ public interface SkippableLongCODEC {
     public void headlessUncompress(long[] in, IntWrapper inpos, int inlength, long[] out,
             IntWrapper outpos, int num);
 
+    /**
+     * Compute the maximum number of longs that might be required to store
+     * the compressed form of a given input array segment, without headers.
+     * <p>
+     * This is useful to pre-allocate the output buffer before calling
+     * {@link #headlessCompress(long[], IntWrapper, int, long[], IntWrapper)}.
+     * </p>
+     *
+     * @param compressedPositions
+     *        since not all schemes compress every input integer, this parameter
+     *        returns how many input integers will actually be compressed.
+     *        This is useful when composing multiple schemes.
+     * @param inlength
+     *            number of longs to be compressed
+     * @return the maximum number of longs needed in the output array
+     */
+    int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength);
 }

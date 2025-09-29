@@ -44,6 +44,12 @@ public final class LongJustCopy implements LongCODEC, SkippableLongCODEC {
         }
 
         @Override
+        public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+            compressedPositions.add(inlength);
+            return inlength;
+        }
+
+        @Override
         public void compress(long[] in, IntWrapper inpos, int inlength,
                 long[] out, IntWrapper outpos) {
             headlessCompress(in,inpos,inlength,out,outpos);

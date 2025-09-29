@@ -111,7 +111,7 @@ public class LongTestUtils {
     }
 
     protected static long[] compressHeadless(SkippableLongCODEC codec, long[] data) {
-        long[] outBuf = new long[data.length * 4];
+        long[] outBuf = new long[codec.maxHeadlessCompressedLength(new IntWrapper(0), data.length)];
         IntWrapper inPos = new IntWrapper();
         IntWrapper outPos = new IntWrapper();
         codec.headlessCompress(data, inPos, data.length, outBuf, outPos);
