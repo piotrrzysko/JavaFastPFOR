@@ -49,7 +49,8 @@ import me.lemire.integercompression.Util;
 public class IntegratedBinaryPacking implements IntegratedIntegerCODEC,
         SkippableIntegratedIntegerCODEC {
 
-    static final int BLOCK_SIZE = 32;
+    public static final int BLOCK_SIZE = 32;
+    private static final int MAX_BIT_WIDTH = Integer.SIZE;
 
     @Override
     public void compress(int[] in, IntWrapper inpos, int inlength, int[] out,
@@ -169,5 +170,14 @@ public class IntegratedBinaryPacking implements IntegratedIntegerCODEC,
         outpos.add(outlength);
         initvalue.set(initoffset);
         inpos.set(tmpinpos);
+    }
+
+    @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        int blockCount = inlength / BLOCK_SIZE;
+        int headersSizeInInts = blockCount / Integer.BYTES + (blockCount % Integer.BYTES);
+        int blocksSizeInInts = blockCount * MAX_BIT_WIDTH;
+        compressedPositions.add(blockCount * BLOCK_SIZE);
+        return headersSizeInInts + blocksSizeInInts;
     }
 }

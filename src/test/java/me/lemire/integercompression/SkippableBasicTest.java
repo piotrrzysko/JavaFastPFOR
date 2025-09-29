@@ -9,8 +9,13 @@ package me.lemire.integercompression;
 
 import java.util.Arrays;
 
+import me.lemire.integercompression.differential.IntegratedBinaryPacking;
+import me.lemire.integercompression.differential.IntegratedVariableByte;
+import me.lemire.integercompression.differential.SkippableIntegratedComposition;
+import me.lemire.integercompression.differential.SkippableIntegratedIntegerCODEC;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
 
 /**
  * Just some basic sanity tests.
@@ -147,5 +152,33 @@ public class SkippableBasicTest {
         }
     }
 
+    @Test
+    public void testMaxHeadlessCompressedLength() {
+        testMaxHeadlessCompressedLength(new IntegratedBinaryPacking(), 16 * IntegratedBinaryPacking.BLOCK_SIZE);
+        testMaxHeadlessCompressedLength(new IntegratedVariableByte(), 128);
+        testMaxHeadlessCompressedLength(new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte()), 16 * IntegratedBinaryPacking.BLOCK_SIZE + 10);
+    }
 
+    private static void testMaxHeadlessCompressedLength(SkippableIntegratedIntegerCODEC codec, int inlengthTo) {
+        // We test the worst-case scenario by making all deltas and the initial value negative.
+        int delta = -1;
+        int value = delta;
+
+        for (int inlength = 0; inlength < inlengthTo; ++inlength) {
+            int[] input = new int[inlength];
+            for (int i = 0; i < inlength; i++) {
+                input[i] = value;
+                value += delta;
+            }
+
+            int maxOutputLength = codec.maxHeadlessCompressedLength(new IntWrapper(), inlength);
+            int[] output = new int[maxOutputLength];
+            IntWrapper outPos = new IntWrapper();
+
+            codec.headlessCompress(input, new IntWrapper(), inlength, output, outPos, new IntWrapper());
+            // If we reach this point, no exception was thrown, which means the calculated output length was sufficient.
+
+            assertTrue(maxOutputLength <= outPos.get() + 1); // +1 because SkippableIntegratedComposition always adds one extra integer for the potential header
+        }
+    }
 }

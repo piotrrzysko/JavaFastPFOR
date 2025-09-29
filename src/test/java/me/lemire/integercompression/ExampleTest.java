@@ -116,11 +116,7 @@ public class ExampleTest {
         // be processed using variable byte
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(),
                 new IntegratedVariableByte());
-        // output vector should be large enough...
-        int[] compressed = new int[data.length + 1024];
-        // compressed might not be large enough in some cases
-        // if you get java.lang.ArrayIndexOutOfBoundsException, try
-        // allocating more memory
+        int[] compressed = new int[codec.maxHeadlessCompressedLength(new IntWrapper(0), data.length)];
 
         /**
          *
