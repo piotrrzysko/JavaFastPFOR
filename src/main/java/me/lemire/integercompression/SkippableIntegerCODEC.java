@@ -69,4 +69,21 @@ public interface SkippableIntegerCODEC {
     public void headlessUncompress(int[] in, IntWrapper inpos, int inlength, int[] out,
             IntWrapper outpos, int num);
 
+    /**
+     * Compute the maximum number of integers that might be required to store
+     * the compressed form of a given input array segment, without headers.
+     * <p>
+     * This is useful to pre-allocate the output buffer before calling
+     * {@link #headlessCompress(int[], IntWrapper, int, int[], IntWrapper)}.
+     * </p>
+     *
+     * @param compressedPositions
+     *        since not all schemes compress every input integer, this parameter
+     *        returns how many input integers will actually be compressed.
+     *        This is useful when composing multiple schemes.
+     * @param inlength
+     *            number of integers to be compressed
+     * @return the maximum number of integers needed in the output array
+     */
+    int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength);
 }

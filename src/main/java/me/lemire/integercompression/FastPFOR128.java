@@ -23,6 +23,13 @@ import java.util.Arrays;
  */
 public class FastPFOR128 implements IntegerCODEC,SkippableIntegerCODEC {
         final static int OVERHEAD_OF_EACH_EXCEPT = 8;
+        private static final int OVERHEAD_OF_EACH_PAGE_IN_INTS = 36; // 1 int for the header
+                                                                     // 1 int for the byte array size
+                                                                     // 1 int for the bitmap
+                                                                     // 1 int for byte array padding (to align to 4 bytes)
+                                                                     // 32 to have enough space to bit-pack the exceptions
+        private static final int OVERHEAD_OF_EACH_BLOCK_IN_INTS = 1; // 1 byte for the number of bits allocated per truncated integer
+                                                                     // 1 byte for the number of exceptions
         /**
          *
          */
@@ -207,6 +214,18 @@ public class FastPFOR128 implements IntegerCODEC,SkippableIntegerCODEC {
                                 finalout - outpos.get());
                         decodePage(in, inpos, out, outpos, thissize);
                 }
+        }
+
+        @Override
+        public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+            inlength = Util.greatestMultiple(inlength, BLOCK_SIZE);
+
+            int pageCount = (inlength + pageSize - 1) / pageSize;
+            int blockCount = inlength / BLOCK_SIZE;
+
+            // getBestBFromData limits the memory used for exceptions so that the total size of the block does not exceed BLOCK_SIZE integers.
+            int blockSizeInInts = OVERHEAD_OF_EACH_BLOCK_IN_INTS + BLOCK_SIZE;
+            return OVERHEAD_OF_EACH_PAGE_IN_INTS * pageCount + blockSizeInInts * blockCount + 24;
         }
 
         private void decodePage(int[] in, IntWrapper inpos, int[] out,

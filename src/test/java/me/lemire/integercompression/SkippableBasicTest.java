@@ -53,10 +53,11 @@ public class SkippableBasicTest {
         for (SkippableIntegerCODEC c : codecs) {
             System.out.println("[SkippeableBasicTest.consistentTest] codec = "
                     + c);
-            int[] outBuf = new int[N + 1024];
             for (int n = 0; n <= N; ++n) {
                 IntWrapper inPos = new IntWrapper();
                 IntWrapper outPos = new IntWrapper();
+                int[] outBuf = new int[c.maxHeadlessCompressedLength(new IntWrapper(0), n)];
+
                 c.headlessCompress(data, inPos, n, outBuf, outPos);
 
                 IntWrapper inPoso = new IntWrapper();
@@ -157,6 +158,33 @@ public class SkippableBasicTest {
         testMaxHeadlessCompressedLength(new IntegratedBinaryPacking(), 16 * IntegratedBinaryPacking.BLOCK_SIZE);
         testMaxHeadlessCompressedLength(new IntegratedVariableByte(), 128);
         testMaxHeadlessCompressedLength(new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte()), 16 * IntegratedBinaryPacking.BLOCK_SIZE + 10);
+
+        testMaxHeadlessCompressedLength(new BinaryPacking(), 16 * BinaryPacking.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new VariableByte(), 128, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new BinaryPacking(), new VariableByte()), 16 * BinaryPacking.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new JustCopy(), 128, 32);
+        testMaxHeadlessCompressedLength(new Simple9(), 128, 28);
+        testMaxHeadlessCompressedLength(new Simple16(), 128, 28);
+        testMaxHeadlessCompressedLength(new GroupSimple9(), 128, 28);
+        testMaxHeadlessCompressedLength(new OptPFD(), 4 * OptPFD.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new OptPFD(), new VariableByte()), 4 * OptPFD.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new OptPFDS9(), 4 * OptPFDS9.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new OptPFDS9(), new VariableByte()), 4 * OptPFDS9.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new OptPFDS16(), 4 * OptPFDS16.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new OptPFDS9(), new VariableByte()), 4 * OptPFDS16.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new NewPFD(), 4 * NewPFD.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new NewPFD(), new VariableByte()), 4 * NewPFD.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new NewPFDS9(), 4 * NewPFDS9.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new NewPFDS9(), new VariableByte()), 4 * NewPFDS9.BLOCK_SIZE + 10, 32);
+        testMaxHeadlessCompressedLength(new NewPFDS16(), 4 * NewPFDS16.BLOCK_SIZE, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new NewPFDS16(), new VariableByte()), 4 * NewPFDS16.BLOCK_SIZE + 10, 32);
+
+        int fastPfor128PageSize = FastPFOR128.BLOCK_SIZE * 4; // smaller page size than the default to speed up the test
+        testMaxHeadlessCompressedLength(new FastPFOR128(fastPfor128PageSize), 2 * fastPfor128PageSize, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new FastPFOR128(fastPfor128PageSize), new VariableByte()), 2 * fastPfor128PageSize + 10, 32);
+        int fastPforPageSize = FastPFOR.BLOCK_SIZE * 4; // smaller page size than the default to speed up the test
+        testMaxHeadlessCompressedLength(new FastPFOR(fastPforPageSize), 2 * fastPforPageSize, 32);
+        testMaxHeadlessCompressedLength(new SkippableComposition(new FastPFOR(fastPforPageSize), new VariableByte()), 2 * fastPforPageSize + 10, 32);
     }
 
     private static void testMaxHeadlessCompressedLength(SkippableIntegratedIntegerCODEC codec, int inlengthTo) {
@@ -179,6 +207,33 @@ public class SkippableBasicTest {
             // If we reach this point, no exception was thrown, which means the calculated output length was sufficient.
 
             assertTrue(maxOutputLength <= outPos.get() + 1); // +1 because SkippableIntegratedComposition always adds one extra integer for the potential header
+        }
+    }
+
+    private static void testMaxHeadlessCompressedLength(SkippableIntegerCODEC codec, int inlengthTo, int maxBitWidth) {
+        // Some schemes ignore bit widths between 21 and 31. Therefore, in addition to maxBitWidth - 1, we also test 20.
+        assertTrue(maxBitWidth >= 20);
+        int[] regularValueBitWidths = { 20, maxBitWidth - 1 };
+
+        for (int inlength = 0; inlength < inlengthTo; ++inlength) {
+            int[] input = new int[inlength];
+
+            int maxOutputLength = codec.maxHeadlessCompressedLength(new IntWrapper(), inlength);
+            int[] output = new int[maxOutputLength];
+
+            for (int exceptionCount = 0; exceptionCount < inlength; exceptionCount++) {
+                int exception = maxBitWidth == 32 ? -1 : (1 << maxBitWidth) - 1;
+
+                for (int regularValueBitWidth : regularValueBitWidths) {
+                    int regularValue = regularValueBitWidth == 32 ? -1 : (1 << regularValueBitWidth) - 1;
+
+                    Arrays.fill(input, 0, exceptionCount, exception);
+                    Arrays.fill(input, exceptionCount, input.length, regularValue);
+
+                    codec.headlessCompress(input, new IntWrapper(), inlength, output, new IntWrapper());
+                    // If we reach this point, no exception was thrown, which means the calculated output length was sufficient.
+                }
+            }
         }
     }
 }

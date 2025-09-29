@@ -62,6 +62,16 @@ public class SkippableComposition implements SkippableIntegerCODEC {
     }
 
     @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        int init = compressedPositions.get();
+        int maxLength = F1.maxHeadlessCompressedLength(compressedPositions, inlength);
+        maxLength += 1; // Add +1 for the potential F2 header. Question: is this header actually needed in the headless version?
+        inlength -= compressedPositions.get() - init;
+        maxLength += F2.maxHeadlessCompressedLength(compressedPositions, inlength);
+        return maxLength;
+    }
+
+    @Override
     public String toString() {
         return F1.toString() + "+" + F2.toString();
     }

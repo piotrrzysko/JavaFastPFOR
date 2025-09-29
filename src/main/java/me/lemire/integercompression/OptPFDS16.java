@@ -147,6 +147,17 @@ public final class OptPFDS16 implements IntegerCODEC,SkippableIntegerCODEC {
                 decodePage(in, inpos, out, outpos, mynvalue);
         }
 
+        @Override
+        public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+                inlength = Util.greatestMultiple(inlength, BLOCK_SIZE);
+                int blockCount = inlength / BLOCK_SIZE;
+                // +1 for the header
+                // getBestBFromData limits the memory used for exceptions so that the total size of the block does not exceed BLOCK_SIZE integers.
+                int maxBlockSizeInInts = 1 + BLOCK_SIZE;
+                compressedPositions.add(inlength);
+                return maxBlockSizeInInts * blockCount;
+        }
+
         private void decodePage(int[] in, IntWrapper inpos, int[] out,
                 IntWrapper outpos, int thissize) {
                 int tmpoutpos = outpos.get();

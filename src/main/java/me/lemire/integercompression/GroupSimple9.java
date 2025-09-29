@@ -3549,4 +3549,10 @@ public final class GroupSimple9 implements IntegerCODEC, SkippableIntegerCODEC {
         inpos.set(tmpinpos);
         
     }
+
+    @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        compressedPositions.add(inlength);
+        return inlength;
+    }
 }

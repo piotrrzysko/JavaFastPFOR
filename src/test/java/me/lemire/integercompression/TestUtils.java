@@ -165,7 +165,7 @@ public class TestUtils {
     }
 
     protected static int[] compressHeadless(SkippableIntegerCODEC codec, int[] data) {
-        int[] outBuf = new int[data.length * 4];
+        int[] outBuf = new int[codec.maxHeadlessCompressedLength(new IntWrapper(0), data.length)];
         IntWrapper inPos = new IntWrapper();
         IntWrapper outPos = new IntWrapper();
         codec.headlessCompress(data, inPos, data.length, outBuf, outPos);

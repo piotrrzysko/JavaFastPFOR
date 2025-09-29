@@ -263,9 +263,11 @@ public class example {
         int[] uncompressed1 = {1,2,1,3,1};
         int[] uncompressed2 = {3,2,4,6,1};
 
-        int[] compressed = new int[uncompressed1.length+uncompressed2.length+1024];
-
         SkippableIntegerCODEC codec = new SkippableComposition(new BinaryPacking(), new VariableByte());
+
+        int maxCompressedLength = codec.maxHeadlessCompressedLength(new IntWrapper(0), uncompressed1.length)
+                                  + codec.maxHeadlessCompressedLength(new IntWrapper(0), uncompressed2.length);
+        int[] compressed = new int[maxCompressedLength];
 
         // compressing
         IntWrapper outPos = new IntWrapper();

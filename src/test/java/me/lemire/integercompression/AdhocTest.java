@@ -86,10 +86,10 @@ public class AdhocTest {
     @Test
     public void testIssue29b() {
         for(int x = 0; x < 64; x++) {
-            int[] a = {2, 3, 4, 5};
-            int[] b = new int[90];
-            int[] c = new int[a.length];
             SkippableIntegerCODEC codec = new SkippableComposition(new BinaryPacking(), new VariableByte());
+            int[] a = {2, 3, 4, 5};
+            int[] b = new int[x + codec.maxHeadlessCompressedLength(new IntWrapper(0), a.length)];
+            int[] c = new int[a.length];
             IntWrapper aOffset = new IntWrapper(0);
             IntWrapper bOffset = new IntWrapper(x);
             codec.headlessCompress(a, aOffset, a.length, b, bOffset);
