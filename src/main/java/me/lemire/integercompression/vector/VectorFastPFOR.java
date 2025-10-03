@@ -229,6 +229,11 @@ public class VectorFastPFOR implements IntegerCODEC, SkippableIntegerCODEC {
     }
   }
 
+  @Override
+  public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+    throw new UnsupportedOperationException("Calculating the max compressed length is not supported yet.");
+  }
+
   private void loadMetaData(int[] in, int inexcept, int bytesize) {
     // Arrays.fill(bem, (byte)0);
     int len = (bytesize + 3) / 4;

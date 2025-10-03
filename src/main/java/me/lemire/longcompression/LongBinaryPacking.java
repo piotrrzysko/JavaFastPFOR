@@ -23,8 +23,9 @@ import me.lemire.integercompression.Util;
  * @author Benoit Lacelle
  */
 public final class LongBinaryPacking implements LongCODEC, SkippableLongCODEC {
-        final static int BLOCK_SIZE = 64;
-    
+        public final static int BLOCK_SIZE = 64;
+        private static final int MAX_BIT_WIDTH = Long.SIZE;
+
         @Override
         public void compress(long[] in, IntWrapper inpos, int inlength,
                 long[] out, IntWrapper outpos) {
@@ -136,6 +137,15 @@ public final class LongBinaryPacking implements LongCODEC, SkippableLongCODEC {
             inpos.set(tmpinpos);
         }
         
+        @Override
+        public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+            int blockCount = inlength / BLOCK_SIZE;
+            int headersSizeInLongs = blockCount / Long.BYTES + (blockCount % Long.BYTES);
+            int blocksSizeInLongs = blockCount * MAX_BIT_WIDTH;
+            compressedPositions.add(blockCount * BLOCK_SIZE);
+            return headersSizeInLongs + blocksSizeInLongs;
+        }
+
         @Override
         public String toString() {
                 return this.getClass().getSimpleName();

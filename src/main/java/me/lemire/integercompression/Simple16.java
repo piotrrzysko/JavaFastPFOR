@@ -103,6 +103,12 @@ public final class Simple16 implements IntegerCODEC, SkippableIntegerCODEC {
         outpos.set(i_outpos);
     }
 
+    @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        compressedPositions.add(inlength);
+        return inlength;
+    }
+
     /**
      * Uncompress data from an array to another array.
      * 

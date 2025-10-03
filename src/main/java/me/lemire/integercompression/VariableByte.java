@@ -21,6 +21,8 @@ import java.nio.IntBuffer;
  */
 public class VariableByte implements IntegerCODEC, ByteIntegerCODEC, SkippableIntegerCODEC {
 
+    private static final int MAX_BYTES_PER_INT = 5;
+
     private static byte extract7bits(int i, long val) {
         return (byte) ((val >> (7 * i)) & ((1 << 7) - 1));
     }
@@ -206,6 +208,14 @@ public class VariableByte implements IntegerCODEC, ByteIntegerCODEC, SkippableIn
         }
         outpos.set(tmpoutpos);
         inpos.set(p + (s!=0 ? 1 : 0));
+    }
+
+    @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        int maxLengthInBytes = inlength * MAX_BYTES_PER_INT;
+        int maxLengthInInts = (maxLengthInBytes + Integer.BYTES - 1) / Integer.BYTES;
+        compressedPositions.add(inlength);
+        return maxLengthInInts;
     }
 
     /**

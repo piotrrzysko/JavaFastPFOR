@@ -3,7 +3,6 @@ package me.lemire.longcompression;
 import java.util.Arrays;
 
 import me.lemire.integercompression.IntWrapper;
-import me.lemire.integercompression.UncompressibleInputException;
 
 /**
  * This is a convenience class that wraps a codec to provide
@@ -37,20 +36,14 @@ public class LongCompressor {
      * 
      * @param input array to be compressed
      * @return compressed array
-     * @throws UncompressibleInputException if the data is too poorly compressible
      */
     public  long[] compress(long[] input) {
-    	long[] compressed = new long[input.length + input.length / 100 + 1024];
+        int maxCompressedLength = codec.maxHeadlessCompressedLength(new IntWrapper(0), input.length);
+        long[] compressed = new long[maxCompressedLength + 1]; // +1 to store the length of the input
         // Store at index=0 the length of the input, hence enabling .headlessCompress
         compressed[0] = input.length;
         IntWrapper outpos = new IntWrapper(1);
-        try {
-            codec.headlessCompress(input, new IntWrapper(0),
-                    input.length, compressed, outpos);
-        } catch (IndexOutOfBoundsException ioebe) {
-            throw new UncompressibleInputException("Your input is too poorly compressible "
-                    + "with the current codec : "+codec);
-        }
+        codec.headlessCompress(input, new IntWrapper(0), input.length, compressed, outpos);
         compressed = Arrays.copyOf(compressed,outpos.intValue());
         return compressed;
     }

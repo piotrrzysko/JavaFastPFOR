@@ -269,6 +269,12 @@ public final class Simple9 implements IntegerCODEC, SkippableIntegerCODEC {
     }
 
     @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        compressedPositions.add(inlength);
+        return inlength;
+    }
+
+    @Override
     public void compress(int[] in, IntWrapper inpos, int inlength, int[] out, IntWrapper outpos) {
         if (inlength == 0)
             return;

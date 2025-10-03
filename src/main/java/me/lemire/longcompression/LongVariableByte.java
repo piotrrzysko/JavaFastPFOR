@@ -22,6 +22,7 @@ import me.lemire.integercompression.IntWrapper;
  * @author Benoit Lacelle
  */
 public class LongVariableByte implements LongCODEC, ByteLongCODEC, SkippableLongCODEC {
+    private static final int MAX_BYTES_PER_INT = 10;
 
     private static byte extract7bits(int i, long val) {
         return (byte) ((val >>> (7 * i)) & ((1 << 7) - 1));
@@ -324,6 +325,14 @@ public class LongVariableByte implements LongCODEC, ByteLongCODEC, SkippableLong
         }
         outpos.set(tmpoutpos);
         inpos.set(p + (s!=0 ? 1 : 0));
+    }
+
+    @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        int maxLengthInBytes = inlength * MAX_BYTES_PER_INT;
+        int maxLengthInLongs = (maxLengthInBytes + Long.BYTES - 1) / Long.BYTES;
+        compressedPositions.add(inlength);
+        return maxLengthInLongs;
     }
 
     /**

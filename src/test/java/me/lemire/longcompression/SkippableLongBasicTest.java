@@ -15,6 +15,7 @@ import me.lemire.integercompression.IntWrapper;
 import me.lemire.integercompression.TestUtils;
 import me.lemire.integercompression.VariableByte;
 
+import static org.junit.Assert.assertTrue;
 
 /**
  * Just some basic sanity tests.
@@ -42,10 +43,11 @@ public class SkippableLongBasicTest {
         for (SkippableLongCODEC c : codecs) {
             System.out.println("[SkippeableBasicTest.consistentTest] codec = "
                     + c);
-            long[] outBuf = new long[N + 1024];
             for (int n = 0; n <= N; ++n) {
                 IntWrapper inPos = new IntWrapper();
                 IntWrapper outPos = new IntWrapper();
+                long[] outBuf = new long[c.maxHeadlessCompressedLength(new IntWrapper(0), n)];
+
                 c.headlessCompress(data, inPos, n, outBuf, outPos);
 
                 IntWrapper inPoso = new IntWrapper();
@@ -142,5 +144,27 @@ public class SkippableLongBasicTest {
         }
     }
 
+    @Test
+    public void testMaxHeadlessCompressedLength() {
+        testMaxHeadlessCompressedLength(new LongJustCopy(), 128);
+        testMaxHeadlessCompressedLength(new LongBinaryPacking(), 16 * LongBinaryPacking.BLOCK_SIZE);
+        testMaxHeadlessCompressedLength(new LongVariableByte(), 128);
+        testMaxHeadlessCompressedLength(new SkippableLongComposition(new LongBinaryPacking(), new LongVariableByte()), 16 * LongBinaryPacking.BLOCK_SIZE + 10);
+    }
 
+    private static void testMaxHeadlessCompressedLength(SkippableLongCODEC codec, int inlengthTo) {
+        for (int inlength = 0; inlength < inlengthTo; ++inlength) {
+            long[] input = new long[inlength];
+            Arrays.fill(input, -1L);
+
+            int maxOutputLength = codec.maxHeadlessCompressedLength(new IntWrapper(), inlength);
+            long[] output = new long[maxOutputLength];
+            IntWrapper outPos = new IntWrapper();
+
+            codec.headlessCompress(input, new IntWrapper(), inlength, output, outPos);
+            // If we reach this point, no exception was thrown, which means the calculated output length was sufficient.
+
+            assertTrue(maxOutputLength <= outPos.get() + 1); // +1 because SkippableLongComposition always adds one extra integer for the potential header
+        }
+    }
 }

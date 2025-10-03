@@ -43,6 +43,12 @@ public final class JustCopy implements IntegerCODEC, SkippableIntegerCODEC {
         }
 
         @Override
+        public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+            compressedPositions.add(inlength);
+            return inlength;
+        }
+
+        @Override
         public void compress(int[] in, IntWrapper inpos, int inlength,
                 int[] out, IntWrapper outpos) {
             headlessCompress(in,inpos,inlength,out,outpos);

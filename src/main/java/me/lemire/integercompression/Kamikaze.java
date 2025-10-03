@@ -39,6 +39,11 @@ public class Kamikaze implements SkippableIntegerCODEC, IntegerCODEC {
     }
 
     @Override
+    public int maxHeadlessCompressedLength(IntWrapper compressedPositions, int inlength) {
+        throw new UnsupportedOperationException("Calculating the max compressed length is not supported yet.");
+    }
+
+    @Override
     public String toString() {
         return "Kamikaze's PForDelta";
     }
