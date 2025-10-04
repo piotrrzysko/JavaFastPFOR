@@ -120,7 +120,7 @@ the following code in your pom.xml file:
 	<dependency>
 	    <groupId>com.github.fast-pack</groupId>
 	    <artifactId>JavaFastPFor</artifactId>
-	    <version>JavaFastPFOR-0.3.1</version>
+	    <version>JavaFastPFOR-0.3.2</version>
 	</dependency>
 ```
 
@@ -159,7 +159,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.fast-pack:JavaFastPFor:JavaFastPFOR-0.3.1'
+    implementation 'com.github.fast-pack:JavaFastPFor:JavaFastPFOR-0.3.2'
 }
 ```
 
@@ -167,12 +167,6 @@ dependencies {
 Naturally, you should replace "version" by the version
 you desire.
 
-Why?
-----
-
-We found no library that implemented state-of-the-art integer coding techniques
-such as Binary Packing, NewPFD, OptPFD, Variable Byte, Simple 9 and so on in Java.
-We wrote one. 
 
 Thread safety 
 ----
