@@ -4,11 +4,6 @@ JavaFastPFOR: A simple integer compression library in Java
 [![Java CI](https://github.com/lemire/JavaFastPFOR/actions/workflows/basic.yml/badge.svg)](https://github.com/lemire/JavaFastPFOR/actions/workflows/basic.yml)
 
 
-License
--------
-
-This code is released under the
-Apache License Version 2.0 http://www.apache.org/licenses/.
 
 
 What does this do?
