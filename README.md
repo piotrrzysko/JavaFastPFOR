@@ -72,30 +72,64 @@ non-vectorized implementation. For an example usage, see
 examples/vector/Example.java. The feature requires JDK 19+ and is currently for 
 advanced users.
 
-Maven central repository
+JitPack
 ------------------------
+
+1. **Maven**
 
 Using this code in your own project is easy with maven, just add
 the following code in your pom.xml file:
 
 ```xml
-    <dependencies>
-         <dependency>
-	     <groupId>me.lemire.integercompression</groupId>
-	     <artifactId>JavaFastPFOR</artifactId>
-	     <version>[0.2,)</version>
-         </dependency>
-     </dependencies>
+	<dependency>
+	    <groupId>com.github.fast-pack</groupId>
+	    <artifactId>JavaFastPFor</artifactId>
+	    <version>JavaFastPFOR-0.3.0</version>
+	</dependency>
+```
+
+as well as jitpack as a repository...
+
+```xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 ```
 
 Naturally, you should replace "version" by the version
 you desire.
 
 
+2. **Gradle (groovy)**
 
-You can also download JavaFastPFOR from the Maven central repository:
-http://repo1.maven.org/maven2/me/lemire/integercompression/JavaFastPFOR/
 
+Then all you need is to edit your `build.gradle` file like so:
+
+
+```groovy
+plugins {
+    id 'java'
+}
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    implementation 'com.github.fast-pack:JavaFastPFor:JavaFastPFOR-0.3.0'
+}
+```
+
+
+Naturally, you should replace "version" by the version
+you desire.
 
 Why?
 ----
