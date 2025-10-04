@@ -1,5 +1,6 @@
 JavaFastPFOR: A simple integer compression library in Java 
 ==========================================================
+[![](https://jitpack.io/v/fast-pack/JavaFastPFor.svg)](https://jitpack.io/#fast-pack/JavaFastPFor)
  [![][maven img]][maven] [![][license img]][license] [![docs-badge][]][docs]
 [![Java CI](https://github.com/lemire/JavaFastPFOR/actions/workflows/basic.yml/badge.svg)](https://github.com/lemire/JavaFastPFOR/actions/workflows/basic.yml)
 
