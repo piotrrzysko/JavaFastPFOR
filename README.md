@@ -153,20 +153,6 @@ Nevertheless, if you want to reuse codec instances,
 note that by convention, unless the documentation of a codec specify
 that it is not thread-safe, then it can be assumed to be thread-safe.
 
-Authors
--------
-
-Main contributors
-* Daniel Lemire, http://lemire.me/en/
-* Muraoka Taro, https://github.com/koron
-
-with contributions by 
-* the Terrier team (Matteo Catena, Craig Macdonald, Saúl Vargas and Iadh Ounis)
-* Di Wu, http://www.facebook.com/diwu1989
-* Stefan Ackermann, https://github.com/Stivo
-* Samit Roy, https://github.com/roysamit
-* Mulugeta Mammo, https://github.com/mulugetam (for VectorFastPFOR)
-
 How does it compare to the Kamikaze PForDelta library?
 ------------------------------------------------------
 
@@ -186,7 +172,7 @@ Requirements
 
 Releases up to 0.1.12 require Java 7 or better.
 
-The current development versions assume JDK 11 or better.
+The current development versions assume JDK 21 or better.
 
 
 
@@ -270,8 +256,6 @@ Funding
 This work was supported by NSERC grant number 26143.
 
 
-[maven img]:https://maven-badges.herokuapp.com/maven-central/me.lemire.integercompression/JavaFastPFOR/badge.svg
-[maven]:http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22me.lemire.integercompression%22%20
 
 [license]:LICENSE
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg
