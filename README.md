@@ -73,8 +73,12 @@ non-vectorized implementation. For an example usage, see
 examples/vector/Example.java. The feature requires JDK 19+ and is currently for 
 advanced users.
 
-JitPack
+JavaFastPFOR as a dependency (JitPack)
 ------------------------
+
+We have a demo project using JavaFastPFOR as a dependency (both Maven and Gradle). See...
+
+https://github.com/fast-pack/JavaFastPFORDemo
 
 1. **Maven**
 
@@ -85,7 +89,7 @@ the following code in your pom.xml file:
 	<dependency>
 	    <groupId>com.github.fast-pack</groupId>
 	    <artifactId>JavaFastPFor</artifactId>
-	    <version>JavaFastPFOR-0.3.0</version>
+	    <version>JavaFastPFOR-0.3.1</version>
 	</dependency>
 ```
 
@@ -124,7 +128,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.fast-pack:JavaFastPFor:JavaFastPFOR-0.3.0'
+    implementation 'com.github.fast-pack:JavaFastPFor:JavaFastPFOR-0.3.1'
 }
 ```
 
