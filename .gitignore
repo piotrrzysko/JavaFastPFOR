@@ -7,3 +7,5 @@ tags
 target/
 tmp/
 /bin
+.idea
+*.iml
