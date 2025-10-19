@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      forceVersion:
+        description: 'Force version'
+        required: false
+        default: ''
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+#          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+#          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Configure git
+        # Based on https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-to-a-pr-using-the-built-in-token
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run Maven release:prepare
+#        env:
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mvn -B release:prepare
+
+      - name: Determine release version
+        run: |
+          export VERSION=$(grep 'scm.tag=' release.properties | cut -d'=' -f2)
+          echo "released_version=${VERSION}" >> $GITHUB_ENV
+          echo "Releasing version: ${VERSION}"
+
+      - name: Run Maven release:perform
+#        env:
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mvn -B release:perform
+
+      - name: Push git changes
+        run: |
+          git status
+          git describe
+          git push origin master
+          git push origin --tags
+
+      - name: Create GitHub Release
+#        if: github.ref == 'refs/heads/main' && !endsWith(steps.release.outputs.released_version, '-SNAPSHOT')
+        run: gh release create "${{ steps.release.outputs.released_version }}" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
