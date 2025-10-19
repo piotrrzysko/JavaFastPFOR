@@ -19,9 +19,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</connection>
-    <url>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</url>
-    <developerConnection>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</developerConnection>
+    <connection>scm:git:git@github.com:piotrrzysko/JavaFastPFOR.git</connection>
+    <url>scm:git:git@github.com:piotrrzysko/JavaFastPFOR.git</url>
+    <developerConnection>scm:git:git@github.com:piotrrzysko/JavaFastPFOR.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <developers>
