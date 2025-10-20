@@ -10,6 +10,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # to automatically create tags
 
     steps:
       - name: Validate release version
@@ -25,12 +27,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: master
 
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'adopt'
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Configure git
         run: |
@@ -40,6 +45,7 @@ jobs:
       - name: Prepare Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           MVN_ARGS=""
           if [ -n "${{ github.event.inputs.releaseVersion }}" ]; then
@@ -67,9 +73,9 @@ jobs:
           MAVEN_USER: ${{ secrets.MAVEN_USER }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: |
-          mvn -B release:perform -Darguments="-DskipTests -Dnjord.autoPublish -s .github/release-settings.xml"
+          mvn -B release:perform -Darguments="-DskipTests -DaltDeploymentRepository=id::default::njord: -Dnjord.autoPublish" -s .github/release-settings.xml
 
-      - name: Create GitHub Release
-        run: gh release create "${{ steps.version.outputs.released_tag }}" --generate-notes --title "Version ${{ steps.version.outputs.released_version }}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Create GitHub Release
+#        run: gh release create "${{ steps.version.outputs.released_tag }}" --generate-notes --title "Version ${{ steps.version.outputs.released_version }}"
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
