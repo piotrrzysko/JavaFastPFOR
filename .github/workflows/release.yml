@@ -31,6 +31,8 @@ jobs:
         with:
           java-version: '21'
           distribution: 'adopt'
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Configure git
         run: |
@@ -40,6 +42,7 @@ jobs:
       - name: Prepare Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           MVN_ARGS=""
           if [ -n "${{ github.event.inputs.releaseVersion }}" ]; then
