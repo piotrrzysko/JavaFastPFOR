@@ -9,6 +9,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.release>21</maven.compiler.release>
     <encoding>UTF-8</encoding>
+    <njord.version>0.8.5</njord.version>
   </properties>
   <licenses>
     <license>
@@ -19,11 +20,25 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</connection>
-    <url>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</url>
-    <developerConnection>scm:git:git@github.com:fast-pack/JavaFastPFOR.git</developerConnection>
+    <connection>scm:git:https://github.com/fast-pack/JavaFastPFOR.git</connection>
+    <url>scm:git:https://github.com/fast-pack/JavaFastPFOR.git</url>
+    <developerConnection>scm:git:https://github.com/fast-pack/JavaFastPFOR.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-central-portal</id>
+      <name>Sonatype Central Portal</name>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-central-portal</id>
+      <name>Sonatype Central Portal</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+  </distributionManagement>
+
   <developers>
     <developer>
       <id>lemire</id>
@@ -60,6 +75,13 @@
     <url>https://github.com/fast-pack/JavaFastPFOR/issues</url>
   </issueManagement>
   <build>
+    <extensions>
+      <extension>
+        <groupId>eu.maveniverse.maven.njord</groupId>
+        <artifactId>extension3</artifactId>
+        <version>${njord.version}</version>
+      </extension>
+    </extensions>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -174,10 +196,29 @@
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.8</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>eu.maveniverse.maven.plugins</groupId>
+                    <artifactId>njord</artifactId>
+                    <version>${njord.version}</version>
+                </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>2.5</version>
