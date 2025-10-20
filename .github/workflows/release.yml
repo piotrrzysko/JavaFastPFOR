@@ -74,3 +74,8 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: |
           mvn -B release:perform -Darguments="-DskipTests -DaltDeploymentRepository=id::default::njord: -Dnjord.autoPublish=true -Dnjord.publishingType=automatic" -s .github/release-settings.xml
+
+      - name: Create GitHub Release
+        run: gh release create "${{ steps.version.outputs.released_tag }}" --generate-notes --title "Version ${{ steps.version.outputs.released_version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
