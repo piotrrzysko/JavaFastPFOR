@@ -53,6 +53,15 @@ jobs:
           fi
           mvn -B release:prepare $MVN_ARGS
 
+      - name: Check release.properties
+        run: |
+          if [ ! -f release.properties ]; then
+            echo "release.properties not found"
+            exit 1
+          fi
+          echo "Contents of release.properties:"
+          cat release.properties
+
       - name: Determine release version
         id: version
         run: |
